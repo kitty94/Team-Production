@@ -12,6 +12,11 @@ public class Player : MonoBehaviour {
 	public Vector3 savePoint;
 
 	public GUISkin skin;
+
+	//Add by Kien
+	public Rigidbody bombPrefab;		//Our PreFab
+	public Transform bombStartPoint;	//Location where we want to shoot the bomb from
+	public float throwPower = 10.0f;		//Power variable determines how fast this object will be shotout
 	
 	// Use this for initialization
 	void Start () {
@@ -23,6 +28,10 @@ public class Player : MonoBehaviour {
 		if (player.currentSanity >= player.maxSanity) {
 			GameOver();
 		}
+
+		//Add by Kien
+		if(Input.GetKeyDown (KeyCode.B))
+			ThrowBomb ();
 
 		Debug.Log ("Spawn Point: " + savePoint);
 	}
@@ -71,5 +80,17 @@ public class Player : MonoBehaviour {
 		gameOver = true;
 		gameObject.AddComponent<GameOverScript>();
 		}
+	}
+
+	public void ThrowBomb(){
+
+		Rigidbody bombInstance;
+
+		//bombStartPoint.position = this.transform.forward;
+
+		bombInstance = Instantiate(bombPrefab, bombStartPoint.position, bombStartPoint.rotation) as Rigidbody;
+
+		//bombInstance.AddForce (bombStartPoint.forward * throwPower);
+		bombInstance.velocity = bombStartPoint.TransformDirection(Vector3.forward * throwPower);
 	}
 }
