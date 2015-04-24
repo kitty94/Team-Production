@@ -14,7 +14,7 @@ public class EnemyDetection : MonoBehaviour {
 
 		Player player = GameObject.FindGameObjectWithTag ("Player").GetComponent<Player> ();
 		AIState state = GetComponent<AIState> ();
-		if(!GameObject.FindGameObjectWithTag("Player").GetComponent<Player>().gameOver)//if gameOVer isnt true then Raycasting will not be called.
+		if(!player.gameOver)//if gameOVer isnt true then Raycasting will not be called.
 			Raycasting ();//Stops raycasting
 
 		if(player.isHiding){

@@ -13,8 +13,14 @@ public class Sanity : MonoBehaviour {
 	private float enemyDistance;
 	private float dogDistance;
 
+	GameObject player,enemy,dog;
+	Sanity sanity;
+
 	void Start () {
-	
+		player = GameObject.FindGameObjectWithTag ("Player");
+		enemy = GameObject.FindGameObjectWithTag ("Enemy");
+		dog = GameObject.FindGameObjectWithTag ("Dog");
+		sanity = GameObject.FindGameObjectWithTag ("Player").GetComponent<Sanity> ();
 	}
 	
 	// Update is called once per frame
@@ -55,15 +61,11 @@ public class Sanity : MonoBehaviour {
 	}
 
 	public void calculateSanityRate () {
-		GameObject player = GameObject.FindGameObjectWithTag ("Player");
-		GameObject enemy = GameObject.FindGameObjectWithTag ("Enemy");
-		GameObject dog = GameObject.FindGameObjectWithTag ("Dog");
-		Sanity sanity = GameObject.FindGameObjectWithTag ("Player").GetComponent<Sanity> ();
 		
 		enemyDistance = Vector3.Distance (player.transform.position, enemy.transform.position);
 		dogDistance = Vector3.Distance (player.transform.position, dog.transform.position);
 
-		if(GameObject.FindGameObjectWithTag("Player").GetComponent<Player>().isDetected){
+		if(player.GetComponent<Player>().isDetected){
 			if (enemyDistance <= 4 ) {
 				sanity.sanityRate = 5;
 			} else if (enemyDistance <= 7 && enemyDistance > 4) {

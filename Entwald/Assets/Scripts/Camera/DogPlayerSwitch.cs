@@ -32,6 +32,10 @@ public class DogPlayerSwitch : MonoBehaviour {
 			// Disable dog script and camera
 			dogScript.enabled = false;
 			dogCam.enabled = false;
+			GameObject.Find("DogCamera").GetComponent<RotateCam>().enabled = false;
+			GameObject.Find("Doggy").GetComponent<DogMovement>().enabled = false;
+			GameObject.Find("Player").GetComponent<Movement>().enabled = true;
+			GameObject.Find("Main Camera").GetComponent<RotateCam>().enabled = true;
 
 			// Enable player script and camera
 			playerScript.enabled = true;
@@ -45,6 +49,10 @@ public class DogPlayerSwitch : MonoBehaviour {
 			// Enable dog script and camera
 			dogScript.enabled = true;
 			dogCam.enabled = true;
+			GameObject.Find("DogCamera").GetComponent<RotateCam>().enabled = true;
+			GameObject.Find("Doggy").GetComponent<DogMovement>().enabled = true;
+			GameObject.Find("Player").GetComponent<Movement>().enabled = false;
+			GameObject.Find("Main Camera").GetComponent<RotateCam>().enabled = false;
 		}
 	}
 }

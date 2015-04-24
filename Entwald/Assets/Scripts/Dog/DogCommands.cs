@@ -1,5 +1,5 @@
-﻿using UnityEngine;
-using System.Collections;
+﻿using System.Collections;
+using UnityEngine;
 
 // Attach script to the dog
 // Allows player to click a location and the object will move towards that location
@@ -13,7 +13,10 @@ public class DogCommands : MonoBehaviour {
 	GameObject dogLight;
 	public bool switchOn = true;
 	public bool turnOn = true;
-
+	
+	public bool movement = true;
+	public Transform moveableObject;
+	
 	void Start () {
 		agent = this.GetComponent<NavMeshAgent>();
 		dogLight = GameObject.FindGameObjectWithTag("Light");
@@ -22,35 +25,55 @@ public class DogCommands : MonoBehaviour {
 	
 	void Update () {
 		// The player can left click somewhere to move the dog
-
-		if (Input.GetMouseButtonDown(0)){
-			// Raycasts are used to find location to send object
-			Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-			RaycastHit hit;
-			
-			// If the raycast hit something, move agent towards that location
-			if (Physics.Raycast(ray, out hit, 100)){
+		if (movement){ // If movement = true the player can click to move dog
+			if (Input.GetMouseButtonDown(0)){
+				// Raycasts are used to find location to send object
+				Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+				RaycastHit hit;
 				
-				// If raycast hits a moveable object and dog is close to object, the object is parented to dog
-				if (hit.collider.gameObject.tag == "Moveable"){
-					agent.SetDestination(hit.point);
-					if (Vector3.Distance(this.transform.position, hit.collider.transform.position)<2){
-						hit.collider.transform.parent = this.transform;
+				// If the raycast hit something, move agent towards that location
+				if (Physics.Raycast(ray, out hit, 100)){
+					
+					// If raycast hits a moveable object and dog is close to object, the object is parented to dog
+					if (hit.collider.gameObject.tag == "Moveable"){
+						agent.SetDestination(hit.point);
+						moveableObject = hit.collider.transform;
+						if (Vector3.Distance(this.transform.position, hit.collider.transform.position)<2){
+							hit.collider.transform.parent = this.transform;
+							movement = false;
+						}
+					}
+					else{
+						agent.SetDestination(hit.point);
 					}
 				}
-				else{
+			}
+			
+			
+			// Right click to call dog back to the player
+			if (Input.GetMouseButtonDown(1)){
+				GameObject player = GameObject.FindGameObjectWithTag("Player");
+				agent.SetDestination(player.transform.position);
+			}
+		}
+		else if (!movement){ // If movement = false clicking makes the dog is move an object
+			if (Input.GetMouseButtonDown(0)){
+				// Raycasts are used to find location to send object
+				Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+				RaycastHit hit;
+				
+				// If the raycast hit something, move agent towards that location
+				if (Physics.Raycast(ray, out hit, 100)){
 					agent.SetDestination(hit.point);
+					
+					// If player clicks location near dog, the object that dog is moving will be unparented
+					if (Vector3.Distance(this.transform.position, hit.point)<2.0f){
+						moveableObject.parent = null;
+						movement = true;
+					}
 				}
 			}
 		}
-		
-		
-		// Right click to call dog back to the player
-		if (Input.GetMouseButtonDown(1)){
-			GameObject player = GameObject.FindGameObjectWithTag("Player");
-			agent.SetDestination(player.transform.position);
-		}
-		
 		
 		
 		// Light fades in/out

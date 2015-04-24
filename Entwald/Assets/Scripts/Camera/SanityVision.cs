@@ -17,6 +17,6 @@ public class SanityVision : MonoBehaviour {
 		visionBlur = GameObject.Find("Main Camera").GetComponent<MotionBlur>();
 		visionBlur.blurAmount =  0.01f * player.currentSanity;
 		sanityView = new Color (1, 0, 0, 0.01f * player.currentSanity);
-		GameObject.Find ("Canvas").transform.GetChild (0).GetComponent<Image> ().color = sanityView;
+		GameObject.Find ("SanityCanvas").transform.GetChild (0).GetComponent<Image> ().color = sanityView;
 	}
 }

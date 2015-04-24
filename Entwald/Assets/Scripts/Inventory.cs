@@ -3,6 +3,14 @@ using System.Collections;
 using System.Collections.Generic;
 
 public class Inventory : MonoBehaviour {
+
+	private static Inventory instance;
+
+	public static Inventory Instance {
+		get { return instance; }
+		set { instance = value; }
+	}
+
 	public int slotsX, slotsY;
 	public GUISkin skin;
 	public List<Item> inventory = new List<Item>();
@@ -25,6 +33,13 @@ public class Inventory : MonoBehaviour {
 
 	//public int inventorySize = 25;
 	// Use this for initialization
+
+	void Awake(){
+		if( instance == null){
+			instance = this;
+		}
+	}
+
 	void Start () {
 		for (int i=0; i<slotsX*slotsY; i++) {
 			slots.Add (new Item());
@@ -33,10 +48,10 @@ public class Inventory : MonoBehaviour {
 		database = GameObject.FindGameObjectWithTag ("Item Database").GetComponent<ItemDatabase>();
 
 		LoadInventory ();
-		AddItem (1);
-		AddItem (0);
-		AddItem (2);
-		AddItem (3);
+//		AddItem (1);
+//		AddItem (0);
+//		AddItem (2);
+//		AddItem (3);
 		//RemoveItem (1);
 
 		//print (InventoryContains(1));
@@ -53,10 +68,10 @@ public class Inventory : MonoBehaviour {
 
 	void OnGUI() {
 		GUI.depth = 0;
-		if(GUI.Button (new Rect(40,400,100,40), "Save"))
-			SaveInventory();
-		if(GUI.Button (new Rect(40,450,100,40), "Load"))
-			LoadInventory();
+//		if(GUI.Button (new Rect(40,400,100,40), "Save"))
+//			SaveInventory();
+//		if(GUI.Button (new Rect(40,450,100,40), "Load"))
+//			LoadInventory();
 //		if (GUI.Button (new Rect (40, 500, 100, 40), "Save Game Data"))
 //			PPSerialization.Save ();
 //		if (GUI.Button (new Rect (40, 550, 100, 40), "Load Game Data"))
@@ -179,18 +194,26 @@ public class Inventory : MonoBehaviour {
 				"<color=#ffffff>Power: " + item.itemPower + "</color>\n\n" +
 				"<color=#ffffff>Speed: " + item.itemSpeed + "</color>\n\n" +
 				"<color=#ffffff>Type: " + item.itemType + "</color>";
+
 		} else if (item.itemType == Item.ItemType.Consumable){
 			tooltip = 
-				"<color=#ff0000>" + item.itemName + "</color>\n\n" +
+				"<color=#ffff00>" + item.itemName + "</color>\n\n" +
 					"<color=#ffffff>Description: " + item.itemDesc + "</color>\n\n" +
 					"<color=#ffffff>Heal: " + item.itemPower + "</color>\n\n" +
+					"<color=#ffffff>Type: " + item.itemType + "</color>";
+
+		} else if( item.itemType == Item.ItemType.Throwable){
+			tooltip = 
+				"<color=#ff00ff>" + item.itemName + "</color>\n\n" +
+					"<color=#ffffff>Description: " + item.itemDesc + "</color>\n\n" +
+					"<color=#ffffff>Power: " + item.itemPower + "</color>\n\n" +
 					"<color=#ffffff>Type: " + item.itemType + "</color>";
 		}
 		return tooltip;
 	}
 
 
-	void AddItem(int id){
+	public void AddItem(int id){
 		for (int i=0; i<inventory.Count; i++) {
 			if(inventory[i].itemName == null){
 				for(int j=0; j<database.items.Count; j++){
@@ -203,7 +226,20 @@ public class Inventory : MonoBehaviour {
 		}
 	}
 
-	void RemoveItem(int id){
+	public void AddItem(string name){
+		for (int i=0; i<inventory.Count; i++) {
+			if(inventory[i].itemName == null){
+				for(int j=0; j<database.items.Count; j++){
+					if(database.items[j].itemName == name){
+						inventory[i] = database.items[j];
+					}
+				}
+				break;
+			}
+		}
+	}
+
+	public void RemoveItem(int id){
 		for (int i=0; i<inventory.Count; i++) {
 			if(inventory[i].itemID == id){
 				inventory[i] = new Item();
@@ -212,7 +248,7 @@ public class Inventory : MonoBehaviour {
 		}
 	}
 
-	bool InventoryContains(int id){
+	public bool InventoryContains(int id){
 		bool result = false;
 		for (int i=0; i<inventory.Count; i++){
 			result = inventory[i].itemID == id;
