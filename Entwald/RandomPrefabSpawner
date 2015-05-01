@@ -1,0 +1,102 @@
+// Martin Rodriguez
+// Made for Senior Project 2 - Project 'Entwald'
+
+/* This script will be used to generate a random type of in-game object at
+ * whatever position this empty GameObject is placed.
+ */ 
+
+using UnityEngine;
+using System.Collections;
+using System.Collections.Generic; // To store random values in a list.
+
+public class RandomPrefabSpawner : MonoBehaviour {
+
+	// Public lists that the size can be changed in the Unity editor.
+	// Make the size of however many Game Objects you want to randomly cycle through.
+	public GameObject[] natureObjects;
+	public GameObject[] buildingObjects;
+	public GameObject[] enemies;
+
+	// To store random values in a list to re-use later.
+	private List<GameObject> myStoredGameObjects = new List<GameObject>();
+
+	// This grabs the position of the current empty Game Object so that it may spawn there.
+	private Vector3 thisObjectsPosition;
+
+	// Function that chooses a random Game Object from the above list. From 0 to however many Game Objects you decided.
+	// This locator must be tagged into its specific category: nature, building, enemy, etc.
+	// The Try/Catch is to determine if the current tag matches the correct tag. (Debugging purposes)
+	public GameObject getRandomGameObject()
+	{
+		if(this.gameObject.tag == "Nature")
+		{
+			try{
+				return natureObjects[Random.Range(0,natureObjects.Length)];
+			}
+			catch{
+				Debug.LogError("Be sure to change this locator's tag to the correct tag.");
+			}
+		}
+		else if (this.gameObject.tag == "Building")
+		{
+			try{
+				return buildingObjects[Random.Range(0,buildingObjects.Length)];
+			}
+			catch{
+				Debug.LogError("Be sure to change this locator's tag to the correct tag.");
+			}
+		}
+		else if (this.gameObject.tag == "Enemy")
+		{
+			try{
+				return enemies[Random.Range(0,enemies.Length)];
+			}
+			catch{
+				Debug.LogError("Be sure to change this locator's tag to the correct tag.");
+			}
+		}
+		return null;
+	}
+
+	// Function to instantiate whatever Game Object you wanted.
+	void spawnNatureObject()
+	{
+		GameObject obj = (GameObject) Instantiate(getRandomGameObject(), thisObjectsPosition, Quaternion.identity);
+		myStoredGameObjects.Add(obj);
+	}
+
+	// For debugging purposes in the console log.
+	void displayRandomList()
+	{
+		Debug.Log("Displaying list");
+		Debug.Log (myStoredGameObjects.Count);
+		for (int i=0; i<myStoredGameObjects.Count; i++)
+		{
+			Debug.Log(myStoredGameObjects[i].name);
+		}
+	}
+
+	// Funtion to reload exact GameObjects which will be stored in Unity's PlayerPrefs.
+	void ReloadStoredGameObjects()
+	{
+		for(int i=0; i<myStoredGameObjects.Count; i++)
+		{
+			Instantiate(myStoredGameObjects[i].gameObject, myStoredGameObjects[i].transform.position, Quaternion.identity);
+		}
+	}
+
+	// Use this for initialization
+	void Start () {
+		thisObjectsPosition = this.transform.position;
+		spawnNatureObject();
+	}
+
+	void Update()
+	{
+		// For debug purposes: printing out the list of GameObjects.
+		if (Input.GetKeyDown(KeyCode.E))
+		{
+			displayRandomList();
+		}
+	}
+}
