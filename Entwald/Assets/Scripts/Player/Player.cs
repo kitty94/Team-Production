@@ -2,6 +2,12 @@
 using System.Collections;
 
 public class Player : MonoBehaviour {
+	private static Player instance;
+	public static Player Instance {
+		get { return instance;}
+		set {instance = value;}
+	}
+
 	public bool hideShow;
 	public bool isHiding;
 
@@ -13,19 +19,28 @@ public class Player : MonoBehaviour {
 
 	public GUISkin skin;
 
+	public float currentSanity;
+	public float maxSanity;
+	public float minSanity;
+
 	//Add by Kien
 	public Rigidbody bombPrefab;		//Our PreFab
 	public Transform bombStartPoint;	//Location where we want to shoot the bomb from
 	public float throwPower = 10.0f;		//Power variable determines how fast this object will be shotout
-	
+	//Sanity player;
+
+	void Awake (){
+		if(instance == null)
+			instance = this;
+	}
 	// Use this for initialization
 	void Start () {
+		//player = GameObject.FindGameObjectWithTag ("Player").GetComponent<Sanity> ();
 	}
 	
 	// Update is called once per frame
 	void Update () {
-		Sanity player = GameObject.FindGameObjectWithTag ("Player").GetComponent<Sanity> ();
-		if (player.currentSanity >= player.maxSanity) {
+		if (currentSanity >= maxSanity) {
 			GameOver();
 		}
 
